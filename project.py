@@ -263,10 +263,13 @@ def showPlayer(team_id):
     team = session.query(Team).filter_by(id=team_id).one()
     creator = getUserInfo(team.user_id)
     players = session.query(Player).filter_by(team_id=team_id).all()
-    if 'username' not in login_session or creator.id != login_session['user_id']:
-        return render_template('publicplayers.html', players=players, team=team, creator=creator)
+    if 'username' not in login_session or\
+       creator.id != login_session['user_id']:
+        return render_template('publicplayers.html',
+                               players=players, team=team, creator=creator)
     else:
-        return render_template('publicplayers.html', players=players, team=team, creator=creator)
+        return render_template('publicplayers.html',
+                               players=players, team=team, creator=creator)
 
 
 # ADD New player
@@ -276,10 +279,14 @@ def newPlayer(team_id):
         return redirect('/login')
     team = session.query(Team).filter_by(id=team_id).one()
     if login_session['user_id'] != team.user_id:
-        return "<script>function enzar() {alert('You are not authorized to add players to this team. Please create your own team in order to add items.');}</script><body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You are not authorized  ');}</script>\
+        <body onload='s()'>"
     if request.method == 'POST':
-        player = Player(name=request.form['name'], description=request.form['description'], price=request.form[
-                               'price'], position=request.form['position'], team_id=team_id, user_id=team.user_id)
+        player = Player(name=request.form['name'],
+                        description=request.form['description'],
+                        price=request.form['price'],
+                        position=request.form['position'],
+                        team_id=team_id, user_id=team.user_id)
         session.add(player)
         session.commit()
         flash('New Player %s  Successfully Created' % (player.name))
@@ -289,14 +296,16 @@ def newPlayer(team_id):
 
 
 # Edit player if you are authorized
-@app.route('/team/<int:team_id>/player/<int:player_id>/edit', methods=['GET', 'POST'])
+@app.route('/team/<int:team_id>/player/<int:player_id>/edit',
+           methods=['GET', 'POST'])
 def editPlayer(team_id, player_id):
     if 'username' not in login_session:
         return redirect('/login')
     editedplayer = session.query(Player).filter_by(id=player_id).one()
     team = session.query(Team).filter_by(id=team_id).one()
     if login_session['user_id'] != team.user_id:
-        return "<script>function enzar() {alert('You are not authorized to edit player to this team. Please create your own team in order to edit items.');}</script><body onload='myFunction()'>"
+        return "<script>function s() {alert('You are not authorized ');}</script>\
+        <body onload='s()'>"
     if request.method == 'POST':
         if request.form['name']:
             editedplayer.name = request.form['name']
@@ -311,19 +320,22 @@ def editPlayer(team_id, player_id):
         flash('Player Successfully Edited')
         return redirect(url_for('showPlayer', team_id=team_id))
     else:
-        return render_template('editplayer.html', team_id=team_id, player_id=player_id, player=editedplayer)
+        return render_template('editplayer.html',
+                               team_id=team_id, player_id=player_id,
+                               player=editedplayer)
 
 
 # delete player if you are authorized
-@app.route('/team/<int:team_id>/player/<int:player_id>/delete', methods=['GET', 'POST'])
+@app.route('/team/<int:team_id>/player/<int:player_id>/delete',
+           methods=['GET', 'POST'])
 def deletePlayer(team_id, player_id):
     if 'username' not in login_session:
         return redirect('/login')
     team = session.query(Team).filter_by(id=team_id).one()
-    playerTodelete = session.query(Player).filter_by(id=player_id).one()
     if login_session['user_id'] != team.user_id:
-        return "<script>function myFunction() {alert('You are not authorized to dele.');}</script>\
-         <body onload='myFunction()'>"
+        return "<script>function s() {alert('You are not authorized ');}</script>\
+        <body onload='s()'>"
+    playerTodelete = session.query(Player).filter_by(id=player_id).one()
     if request.method == 'POST':
         session.delete(playerTodelete)
         session.commit()
