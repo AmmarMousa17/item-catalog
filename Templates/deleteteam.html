@@ -7,11 +7,10 @@
 
 	<button type="submit" id="submit" type="submit">
 	<span class="glyphicon glyphicon-trash" ></span>Delete</button> <br>
-	<a href = '{{url_for('showTeams')}}'>
-		<button >
-		 Cancel</button>
-	</a>
+	<a href = "{{url_for('showTeams')}}" class="btn btn-default delete">
 
+						<span class="glyphicon glyphicon-remove"></span> Cancel
+					</a>
 </form>
 
 {% endblock %}
