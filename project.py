@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
+from flask import Flask, render_template, request, redirect
+from flask import jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Team, Player, User
@@ -24,6 +25,7 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
 @app.route('/login')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
@@ -32,10 +34,9 @@ def showLogin():
     return render_template('login.html', STATE=state)
 
 
-
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
-    #check Token
+    # check Token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -47,7 +48,7 @@ def gconnect():
         oauth_flow = flow_from_clientsecrets('client_secret.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
-        #except if an error
+        # except if an error
     except FlowExchangeError:
         response = make_response(
             json.dumps('Failed to upgrade the authorization code.'), 401)
@@ -82,11 +83,10 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
+        response = make_response(json.dumps('Current user is connected.'),
                                  200)
         response.headers['Content-Type'] = 'application/json'
         return response
-
 
     login_session['access_token'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
@@ -114,12 +114,13 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style ="width: 300px; height: 300px;border-radius: 150px;>" '
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
 
-#dealing with user
+# dealing with user
+
 
 def createUser(login_session):
     newUser = User(name=login_session['username'], email=login_session[
@@ -143,10 +144,9 @@ def getUserID(email):
         return None
 
 
-
 @app.route('/gdisconnect')
 def gdisconnect():
-    #used to disconnect the user
+    # used to disconnect the user
     access_token = login_session.get('access_token')
     if access_token is None:
         response = make_response(
@@ -166,17 +166,19 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps('Failed token for  user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
+# JSON end point
 
-#JSON end point
+
 @app.route('/team/<int:team_id>/player/JSON')
 def teamPlayerJSON(team_id):
     team = session.query(Team).filter_by(id=team_id).one()
     players = session.query(Player).filter_by(
        team_id=team_id).all()
     return jsonify(player=[i.serialize for i in players])
+
 
 @app.route('/team/<int:team_id>/player/<int:player_id>/JSON')
 def playerJSON(team_id, player_id):
@@ -189,6 +191,7 @@ def teamsJSON():
     teams = session.query(Team).all()
     return jsonify(team=[r.serialize for r in teams])
 
+
 @app.route('/')
 @app.route('/teams/')
 def showTeams():
@@ -198,7 +201,8 @@ def showTeams():
     else:
         return render_template('teams.html', teams=teams)
 
-#Add new team
+
+# Add new team
 @app.route('/team/new/', methods=['GET', 'POST'])
 def newTeam():
     if 'username' not in login_session:
@@ -213,8 +217,8 @@ def newTeam():
     else:
         return render_template('newteams.html')
 
-#Edit team if you are Authorized
 
+# Edit team if you are Authorized
 @app.route('/team/<int:team_id>/edit/', methods=['GET', 'POST'])
 def editTeam(team_id):
     editedteam = session.query(
@@ -222,7 +226,8 @@ def editTeam(team_id):
     if 'username' not in login_session:
         return redirect('/login')
     if editedteam.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to edit this player. Please create your own team in order to edit.');}</script><body onload='myFunction()'>"
+        return "<script>function s() {alert('You are edit this player');}</script>\
+        <body onload='s()'>"
     if request.method == 'POST':
         if request.form['name']:
             editedteam.name = request.form['name']
@@ -231,7 +236,8 @@ def editTeam(team_id):
     else:
         return render_template('editTeam.html', team=editedteam)
 
-#delete team if you are authorized
+
+# delete team if you are authorized
 @app.route('/team/<int:team_id>/delete/', methods=['GET', 'POST'])
 def deleteTeam(team_id):
     teamToDelete = session.query(
@@ -239,7 +245,8 @@ def deleteTeam(team_id):
     if 'username' not in login_session:
         return redirect('/login')
     if teamToDelete.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to delete this team. Please create your own team in order to delete.');}</script><body onload='myFunction()'>"
+        return "<script>function myFunction(){alert('You are not authorized');}</script>\
+        <body onload='myFunction()'>"
     if request.method == 'POST':
         session.delete(teamToDelete)
         flash('%s Successfully Deleted' % teamToDelete.name)
@@ -248,7 +255,8 @@ def deleteTeam(team_id):
     else:
         return render_template('deleteteam.html', team=teamToDelete)
 
-#show player
+
+# show player
 @app.route('/team/<int:team_id>/')
 @app.route('/team/<int:team_id>/player/')
 def showPlayer(team_id):
@@ -261,7 +269,7 @@ def showPlayer(team_id):
         return render_template('publicplayers.html', players=players, team=team, creator=creator)
 
 
-#ADD New player
+# ADD New player
 @app.route('/player/<int:team_id>/player/new/', methods=['GET', 'POST'])
 def newPlayer(team_id):
     if 'username' not in login_session:
@@ -280,7 +288,7 @@ def newPlayer(team_id):
         return render_template('newplayer.html', team_id=team_id)
 
 
-#Edit player if you are authorized
+# Edit player if you are authorized
 @app.route('/team/<int:team_id>/player/<int:player_id>/edit', methods=['GET', 'POST'])
 def editPlayer(team_id, player_id):
     if 'username' not in login_session:
@@ -305,7 +313,8 @@ def editPlayer(team_id, player_id):
     else:
         return render_template('editplayer.html', team_id=team_id, player_id=player_id, player=editedplayer)
 
-#delete player if you are authorized
+
+# delete player if you are authorized
 @app.route('/team/<int:team_id>/player/<int:player_id>/delete', methods=['GET', 'POST'])
 def deletePlayer(team_id, player_id):
     if 'username' not in login_session:
@@ -313,7 +322,8 @@ def deletePlayer(team_id, player_id):
     team = session.query(Team).filter_by(id=team_id).one()
     playerTodelete = session.query(Player).filter_by(id=player_id).one()
     if login_session['user_id'] != team.user_id:
-         return "<script>function myFunction() {alert('You are not authorized to delete  playerss to this team. Please create your own team in order to delete palayers.');}</script><body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You are not authorized to dele.');}</script>\
+         <body onload='myFunction()'>"
     if request.method == 'POST':
         session.delete(playerTodelete)
         session.commit()
@@ -321,6 +331,8 @@ def deletePlayer(team_id, player_id):
         return redirect(url_for('showPlayer', team_id=team_id))
     else:
         return render_template('deleteplayer.html', player=playerTodelete)
+
+
 # using gdisconnect
 @app.route('/disconnect')
 def disconnect():
@@ -344,4 +356,3 @@ if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=8081)
-
