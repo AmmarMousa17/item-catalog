@@ -1,0 +1,55 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+	<div class="row divider grey">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner player">
+		<div class="col-md-11 ">
+			<h1>New Player</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 padding-top">
+			<form action="#" method = "post">
+				<div >
+					<label >Name:</label>
+					<input type ="text"  name="name">
+
+					<label >Description:</label>
+					<textarea  name="description" ></textarea>
+
+					<label>Price:</label>
+					<div class="input-group">
+
+						<input type ="text"  name="price" >
+					</div>
+					<label >position:</label>
+					<div class="radio">
+					  <label>
+					    <input type="radio" name="position" id="position1" value="GoalKeeper">GoalKeeper
+					  </label>
+					</div>
+					<div class="radio">
+					  <label>
+					    <input type="radio" name="position" id="position2" value="Defender">Defender
+					  </label>
+					</div>
+					<div class="radio">
+					  <label>
+					    <input type="radio" name="position" id="position3" value="Mid">Mid
+					  </label>
+					</div>
+					<div class="radio">
+					  <label>
+					    <input type="radio" name="position" id="position4" value="Attack">Attack
+					  </label>
+					</div>
+					<button type="submit"  id="submit" type="submit">
+					Create</button>
+				</div>
+			</form>
+		</div>
+	</div>
+{% endblock %}
+

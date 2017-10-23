@@ -1,0 +1,124 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+	<div class="row divider grey">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner team">
+		<div class="col-md-11 col-md-offset-1 'style=padding:0px'">
+			<h1>{{ team.name }}
+			<figure class="creator">
+				<img src="{{ creator.picture}}">
+				<figcaption>{{ creator.name }}</figcaption>
+			</figure>
+			</h1>
+
+		</div>
+	</div>
+	<div class="row padding-top padding-bottom">
+		<div class="col-md-1"></div>
+		<div class="col-md-11 padding-none">
+
+		</div>
+		<div class="col-md-7"></div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					<ul>
+						{% for message in messages %}
+							 <li> <strong> {{ message }} </strong> </li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}
+		</div>
+	</div>
+<div class="row padding-top padding-bottom">
+		<div class="col-md-1"></div>
+		<div class="col-md-11 padding-none">
+			<a href="{{url_for('editTeam', team_id = team.id )}}">
+				<button class="btn btn-default" >
+					Edit Team
+				</button>
+			</a>
+			<a href="{{url_for('newPlayer', team_id = team.id )}}">
+				<button class="btn btn-default" >
+				Add Player
+				</button>
+			</a>
+						<a href="{{url_for('deleteTeam', team_id = team.id )}}">
+				<button class="btn btn-default delete" >
+					Delete Team
+				</button>
+			</a>
+		</div>
+		<div class="col-md-7"></div>
+	</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-3">
+				<h2>Goalkeeper</h2>
+					{% for i in players %}
+
+							<div class="palyer">
+								<h3>{{i.name}}</h3>
+								<p>{{i.description}}</p>
+								<p >{{i.price}}</p>
+                                <a href="{{url_for('editPlayer', team_id = team.id, player_id=i.id ) }}">Edit</a> |
+								<a href="{{url_for('deletePlayer', team_id = team.id, player_id=i.id ) }}">Delete</a>
+
+							</div>
+
+					{% endfor %}
+			</div>
+			<div class="col-md-4">
+				<h2>Defender</h2>
+					{% for i in players %}
+						{% if i.position == 'Defender' %}
+						<div class="team">
+							<h3>{{i.name}}</h3>
+							<p>{{i.description}}</p>
+							<p >{{i.price}}</p>
+							<a href="{{url_for('editPlayer', team_id = team.id, player_id=i.id ) }}">Edit</a> |
+							<a href="{{url_for('deletePlayer', team_id = team.id, player_id=i.id ) }}">Delete</a>
+
+
+						</div>
+						{% endif %}
+					{% endfor %}
+			</div>
+			<div class="col-md-3">
+				<h2>Mid</h2>
+					{% for i in players %}
+						{% if i.position == 'Mid' %}
+						<div class="player">
+							<h3>{{i.name}}</h3>
+							<p>{{i.description}}</p>
+							<p class>{{i.price}}</p>
+							<a href="{{url_for('editPlayer', team_id = team.id, player_id=i.id ) }}">Edit</a> |
+							<a href="{{url_for('deletePlayer', team_id = team.id, player_id=i.id ) }}">Delete</a>
+
+
+						</div>
+						{% endif %}
+					{% endfor %}
+				<h2>Attack</h2>
+					{% for i in players %}
+						{% if i.position == 'Attack' %}
+						<div class="player">
+							<h3>{{i.name}}</h3>
+							<p>{{i.description}}</p>
+							<p >{{i.price}}</p>
+							<a href="{{url_for('editPlayer', team_id = team.id, player_id=i.id ) }}">Edit</a> |
+							<a href="{{url_for('deletePlayer', team_id = team.id, player_id=i.id ) }}">Delete</a>
+						</div>
+						{% endif %}
+					{% endfor %}
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+
+{% endblock %}
