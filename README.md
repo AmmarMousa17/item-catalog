@@ -25,7 +25,7 @@ first  setup data base
 </pre>
 <h3> To Make Google API  </h3>
 <ul>
-<li> visit <a href=" https://console.developers.google.com/project">this link</a>/li>
+<li> visit <a href=" https://console.developers.google.com/project">this link</a></li>
 <li> create project</li>
 <li> create client id</li>
 <li> add <a href="#">http://localhost:8081</a> to java script </li>
