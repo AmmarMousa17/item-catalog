@@ -1,0 +1,16 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+<h2> Are you sure you want to delete {{team.name}}? </h2>
+
+<form action="#" method = 'post'>
+
+	<button type="submit" id="submit" type="submit">
+	<span class="glyphicon glyphicon-trash" ></span>Delete</button> <br>
+	<a href = "{{url_for('showTeams')}}" class="btn btn-default delete">
+
+						<span class="glyphicon glyphicon-remove"></span> Cancel
+					</a>
+</form>
+
+{% endblock %}

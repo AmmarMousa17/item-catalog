@@ -1,0 +1,58 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+	<div class="row ">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner player">
+		<div class="col-md-11 ">
+			<h1>Edit Player</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 ">
+			<form action="#" method = "post">
+				<div >
+					Name:
+					<input type ="text" name="name" value="{{player.name }}"> <br>
+
+					Description:
+					<textarea name="description">{{player.description}}</textarea><br>
+
+					Price:
+					<div >
+
+						<input type ="text" name="price" value="{{player.price}}">
+					</div>
+					<label >position:</label>
+					<div class="radio">
+					  <label>
+					    <input type="radio" name="position" id="position1" value="GoalKeeper" {% if player.position == 'GoalKeeper'%}checked{%endif%}>GoalKeeper
+					  </label>
+					</div>
+					<div class="radio">
+					  <label>
+					    <input type="radio" name="position" id="position2" value="Defender" {% if player.position == 'Defender' %}checked{%endif%}>Defender
+					  </label>
+					</div>
+					<div class="radio">
+					  <label>
+					    <input type="radio" name="position" id="position3" value="Mid" {% if player.position == 'Mid'%}checked{%endif%}>Mid
+					  </label>
+					</div>
+					<div class="radio">
+					  <label>
+					    <input type="radio" name="position" id="position4" value="Attack" {%if player.position =='Attack'%}checked{%endif%}>Attack
+					  </label>
+					</div>
+					<button type="submit"  id="submit" type="submit">
+					 Save</button> <br>
+					<a href = "{{url_for('showTeams')}}" class="btn btn-default delete">
+
+						<span class="glyphicon glyphicon-remove"></span> Cancel
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
+{% endblock %}

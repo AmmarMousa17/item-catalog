@@ -1,0 +1,29 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+	<div class="row divider grey">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner player">
+		<div class="col-md-11 'style=padding:0px'">
+			<h1>Edit {{team.name}}</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 padding-top">
+			<form action="{{ url_for('editTeam',team_id = team.id)}}" method = "post">
+				<div class="form-group">
+					<label>Name:</label>
+					<input type ="text"  name="name" value="{{team.name }}">
+					<div class="padding-bottom"></div>
+					<button type="submit"  id="submit" type="submit">
+					Save</button>
+					<a href = "{{url_for('showTeams')}}" class="btn btn-default delete">
+
+						<span class="glyphicon glyphicon-remove"></span> Cancel
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
+{% endblock %}
